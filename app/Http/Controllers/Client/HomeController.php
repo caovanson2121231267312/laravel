@@ -20,6 +20,13 @@ class HomeController extends Controller
         ]);
     }
 
+    public function product()
+    {
+        return view('client.product.index', [
+            "categories" => $categories
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

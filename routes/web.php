@@ -15,3 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
+Route::get('/product', [HomeController::class, 'product'])->name('product');
+
+require __DIR__ . '/admin.php';

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 
 
@@ -20,7 +21,23 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/logout', 'logout')->name('admin.logout');
     });
 
-    Route::controller(DashboardController::class)->group(function () {
-        Route::get('/', 'index')->name('dashboard.index');
+
+    Route::middleware(['checkAdminLogin'])->group(function () {
+
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('dashboard.index');
+        });
+
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('/categories', 'index')->name('category.index');
+            Route::get('/categories/create', 'create')->name('category.create');
+            Route::post('/categories/store', 'store')->name('category.store');
+
+            Route::get('/categories/edit/{id}', 'edit')->name('category.edit');
+            Route::post('/categories/update/{id}', 'update')->name('category.update');
+
+            Route::delete('/categories/delete/{id}', 'destroy')->name('category.delete');
+        });
+        
     });
 });

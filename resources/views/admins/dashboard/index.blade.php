@@ -1,7 +1,7 @@
 @extends('admins.layouts.app')
 
 @section('title')
-    <title>Admin - {{ __('messages.home_page') }}</title>
+    <title>Admin - Trang chủ</title>
 @endsection
 
 @section('breadcrumb')

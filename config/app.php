@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Cviebrock\EloquentSluggable\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
     ])->toArray(),
 
     /*

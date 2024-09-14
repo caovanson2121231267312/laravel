@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware(['ShareCategory'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
+    Route::get('/product', [HomeController::class, 'product'])->name('product');
 
-Route::get('/product', [HomeController::class, 'product'])->name('product');
+    Route::get('/store', [HomeController::class, 'stores'])->name('store');
+});
 
 require __DIR__ . '/admin.php';

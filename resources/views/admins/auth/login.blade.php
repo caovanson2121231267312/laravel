@@ -25,23 +25,33 @@
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form action="{{ route("admin.login.form") }}" method="post">
+                <form action="{{ route('admin.login.form') }}" method="post">
                     @csrf
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Email" name="email">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
                             </div>
+                            @if ($errors->has('email'))
+                                <span class="error text-danger">{{ $errors->first('email') }}</span>
+                            @endif
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Password" name="password">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
                             </div>
                         </div>
+                        @if ($errors->has('password'))
+                            <span class="error text-danger">{{ $errors->first('password') }}</span>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-8">

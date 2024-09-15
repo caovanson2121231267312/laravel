@@ -171,6 +171,8 @@ return [
 
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ])->toArray(),
 
     /*

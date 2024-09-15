@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\FormController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\AccountController;
@@ -38,6 +39,16 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::delete('/categories/delete/{id}', 'destroy')->name('category.delete');
         });
-        
+
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/users', 'index')->name('users.index');
+            // Route::get('/users/create', 'create')->name('users.create');
+            Route::post('/users/store', 'store')->name('users.store');
+
+            Route::get('/users/edit/{id}', 'edit')->name('users.edit');
+            Route::post('/users/update/{id}', 'update')->name('users.update');
+
+            Route::delete('/users/delete/{id}', 'destroy')->name('users.delete');
+        });
     });
 });

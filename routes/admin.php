@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Admin\ProductController;
 
 Route::group(['prefix' => 'admin'], function () {
 
@@ -49,6 +49,10 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/users/update/{id}', 'update')->name('users.update');
 
             Route::delete('/users/delete/{id}', 'destroy')->name('users.delete');
+        });
+        Route::controller(ProductController::class)->group(function(){
+            Route::get('/product', 'index')->name('product.index');
+            Route::post('/product/store', 'store')->name('product.store');
         });
     });
 });

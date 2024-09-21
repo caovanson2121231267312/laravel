@@ -221,16 +221,16 @@ $(document).on('submit', '#submit_form_edit', function (event) {
 $(document).on('click', '.detele_item', function() {
     var id = $(this).data('id');
     var url = $(this).data('url');
-    var confirm = $(this).data('confirm');
-    var content_html = $(this).data('content');
+    // var confirm = $(this).data('confirm');
+    // var content_html = $(this).data('content');
 
     Swal.fire({
-        text: content_html,
+        text: "Bạn chắc chắn muốn  xóap",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: confirm
+        confirmButtonText: "Xác nhận"
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({

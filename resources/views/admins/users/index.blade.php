@@ -123,6 +123,25 @@
             </div>
         </div>
     </div>
+
+
+    {{-- modal edit --}}
+    <div class="modal fade" id="ModalEdit" tabindex="-1" aria-labelledby="ModalEditLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalEditLabel">Sửa tài khoản</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="ModalEditContent">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -195,6 +214,12 @@
                                             <a class="dropdown-item" href="#">Another action</a>
                                             <a class="dropdown-item" href="#">Something else here</a>
                                             <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item modal-edit" data-id="${row?.id}" data-url="{{ route('users.edit', ['id' => '/']) }}/${row?.id}" href="#">
+                                                Edit
+                                            </a>
+                                              <a class="dropdown-item detele_item" data-id="${row?.id}" data-url="{{ route('users.delete', ['id' => '/']) }}/${row?.id}" href="#">
+                                                Delete
+                                            </a>
                                         </div>
                                     </div>`
                         return html

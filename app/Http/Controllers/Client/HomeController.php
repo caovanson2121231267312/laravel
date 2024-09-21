@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,9 +14,11 @@ class HomeController extends Controller
         return view('client.home.index');
     }
 
-    public function product()
+    public function product($slug)
     {
-        return view('client.product.index');
+        $data = Product::findBySlugOrFail($slug);
+
+        return view('client.product.index', ["data" => $data]);
     }
 
     public function stores()

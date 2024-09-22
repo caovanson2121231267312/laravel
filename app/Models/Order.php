@@ -15,4 +15,9 @@ class Order extends Model
        "payment",
        "address"
     ];
+
+    public function order_detail()
+    {
+        return $this->hasMany(Orderdetail::class);
+    }
 }

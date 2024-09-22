@@ -94,17 +94,27 @@
                             </label>
                         </div>
 
-                        <div class="add-to-cart">
-                            <div class="qty-label">
-                                Qty
-                                <div class="input-number">
-                                    <input type="number">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
+                        <form action="{{ route('add_to_cart') }}" method="post">
+                            @csrf
+                            <div class="add-to-cart">
+                                <div class="qty-label">
+                                    Qty
+                                    <div class="input-number">
+                                        <input name="amount" type="number" value="1" min="1" max="100">
+                                        <input name="product_id" hidden value="{{ $data->id }}">
+                                        <span class="qty-up">+</span>
+                                        <span class="qty-down">-</span>
+                                    </div>
                                 </div>
+                                @if (auth()->check())
+                                    <button class="add-to-cart-btn" type="submit"><i class="fa fa-shopping-cart"></i> Thêm vào
+                                        giỏ</button>
+                                @else
+                                    <button class="add-to-cart-btn" id="not_login"><i class="fa fa-shopping-cart"></i> Thêm vào
+                                        giỏ</button>
+                                @endif
                             </div>
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
+                        </form>
 
                         <ul class="product-btns">
                             <li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
@@ -557,5 +567,9 @@
 
 
 @section('script')
-    <script></script>
+    <script>
+        $("#not_login").click(function() {
+            alert("Bạn cần đăng nhập để tiếp tục")
+        })
+    </script>
 @endsection

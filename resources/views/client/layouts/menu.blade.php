@@ -6,7 +6,7 @@
         <div id="responsive-nav">
             <!-- NAV -->
             <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="{{ route('home') }}">Home</a></li>
 
                 @foreach ($categories as $value)
                     <li><a href="#">{{ $value->name }}</a></li>

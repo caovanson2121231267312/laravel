@@ -99,3 +99,8 @@
     <!-- /bottom footer -->
 </footer>
 <!-- /FOOTER -->
+
+<link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
+<script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
+
+@include("admins.layouts.alert")

@@ -100,6 +100,12 @@
                                 <p>Quản lí sản phẩm</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('order.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Quản lí đơn hàng</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- <li class="nav-item {{ Route::is('management.*') ? 'menu-open' : '' }}">

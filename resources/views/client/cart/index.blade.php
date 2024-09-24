@@ -24,6 +24,7 @@
                                 <th>Số lượng</th>
                                 <th>Giá sản phẩm</th>
                                 <th>Tổng tiền</th>
+                                <th>Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +35,8 @@
                             @foreach ($order->order_detail as $value)
                                 <tr>
                                     <td>
-                                        <a class="fw-bold text-dark" href="{{ route("product", ["slug" => $value->product->slug ])}}">
+                                        <a class="fw-bold text-dark"
+                                            href="{{ route('product', ['slug' => $value->product->slug]) }}">
                                             {{ $value->product->name }}
                                         </a>
                                     </td>
@@ -49,6 +51,19 @@
                                     </td>
                                     <td>
                                         {{ number_format($value->product->price * $value->amount, 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        <form class="d-inline" action="{{ route('remove_form_cart', ['id' => $value->id]) }}"
+                                            method="post">
+                                            @method('delete')
+                                            @csrf
+                                            <button type="submit" onclick="return confirm('Bạn có chắc muốn xóa nó?')"
+                                                class="btn btn-danger">
+                                                Delete
+
+                                            </button>
+                                        </form>
+
                                     </td>
                                 </tr>
                                 @php

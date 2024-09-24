@@ -76,4 +76,11 @@ class OrderController extends Controller
             ]);
         }
     }
+
+    public function delete ($id){
+        $delete=Orderdetail::find($id);
+        $delete->delete();
+        return redirect()->back();
+    }
+
 }

@@ -31,12 +31,24 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
                             <div class="mb-3">
-                                <label>Ngày sinh</label>
-                                <input type="date" class="form-control" id="establish">
+                                <label>Trạng thái</label>
+                                <select class="form-control" id="status">
+                                    <option value="">-- Tất cả --</option>
+                                    <option value="1">trong giỏ hàng</option>
+                                    <option value="2">chờ duyệt</option>
+                                    <option value="3">đã duyệt</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="col-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                            <div class="mb-3">
+                                <label>Tạo lúc</label>
+                                <input type="date" class="form-control" id="created_at">
+                            </div>
+                        </div>
+
                         <div
-                            class="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 d-flex align-items-end justify-content-between">
+                            class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-flex align-items-end justify-content-between">
                             <div class="mb-3">
                                 <button type="button" class="btn btn-outline-info" id="btn-search">
                                     <i class="fas fa-search"></i>
@@ -129,7 +141,7 @@
     <div class="modal fade" id="ModalShow" tabindex="-1" aria-labelledby="ModalShowLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary">
                     <h5 class="modal-title" id="ModalShowLabel">Thông tin đơn hàng</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -169,6 +181,8 @@
                 data: function(param) {
                     param.keywords = $("#keywords").val();
                     param.establish = $("#establish").val();
+                    param.created_at = $("#created_at").val();
+                    param.status = $("#status").val();
                 }
             },
             columns: [{
@@ -190,10 +204,11 @@
                     render: function(data, type, row) {
                         var status = 1;
                         if (row.status == 1) {
-                            status = "<div class='text-info'>Giỏ hàng</div>";
-                        }
-                        else if(row.status == 2) {
-                             status = "<div class='text-info'>Chờ duyệt</div>";
+                            status = "<div class='text-warning'>Giỏ hàng</div>";
+                        } else if (row.status == 2) {
+                            status = "<div class='text-info'>Chờ duyệt</div>";
+                        } else if (row.status == 3) {
+                            status = "<div class='text-success'>Đã duyệt</div>";
                         }
 
                         return status
@@ -236,6 +251,14 @@
             datatables.ajax.reload();
         }, 300))
 
+        $(document).on('change', '#created_at', debounce(function() {
+            datatables.ajax.reload();
+        }, 300))
+
+        $(document).on('change', '#status', debounce(function() {
+            datatables.ajax.reload();
+        }, 300))
+
 
         $(document).on('click', '.modal-show', function(event) {
             event.preventDefault();
@@ -255,6 +278,31 @@
                 error: function(xhr) {
                     $('#ModalShow').modal('hide');
                     $("#ModalShowContent").html("")
+                }
+            });
+        })
+
+
+        $(document).on('click', '#btn-confirm', function(event) {
+            event.preventDefault();
+            var url = $("#confirm_order").attr('action');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    order_id: $("#order_id").val(),
+                },
+                success: function(response) {
+                    if (response) {
+                        // $("#ModalShowContent").html(response)
+                        $('#ModalShow').modal('hide');
+                        datatables.ajax.reload();
+                        toastr.success(response?.success)
+                    }
+                },
+                error: function(xhr) {
+                    $('#ModalShow').modal('hide');
+                    // $("#ModalShowContent").html("")
                 }
             });
         })

@@ -76,6 +76,24 @@ class OrderController extends Controller
             ]);
         }
     }
+    public function buy(Request $request , string $id){
+        $data= Order::find($id);
+
+        if($data->status==1){
+            $data->update([
+                "address"=>$request->address,
+                "payment"=>$request->payment,
+                "note"=>$request->note,
+                "status"=>2
+            ]);
+
+            return redirect()->route('cart');
+        }else{
+            return redirect()->route('cart');
+        }
+
+
+    }
 
     public function delete ($id){
         $delete=Orderdetail::find($id);

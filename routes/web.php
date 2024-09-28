@@ -28,5 +28,7 @@ Route::middleware(['ShareCategory'])->group(function () {
 
     Route::delete('/remove_form_cart/{id}',[OrderController::class,'delete'])->name('remove_form_cart');
 
+    Route::post('/buy/{id}', [OrderController::class, 'buy'])->name('buy');
+
     Route::get('/{slug}', [HomeController::class, 'product'])->name('product');
 });

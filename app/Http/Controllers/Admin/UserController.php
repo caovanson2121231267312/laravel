@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UserExport;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use App\Http\Requests\UserRequest;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -152,6 +154,25 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function changepassword(Request $request)
+    {
+        $data = User::find($request->user_id);
+        // dump($request->user_id);
+
+        if ($request->password != $request->password_confirmation) {
+            return response()->json([
+                "error" => "mật khẩu không khớp"
+            ], 500);
+        } else {
+            $data->update([
+                "password" => Hash::make($request->password),
+            ]);
+            return response()->json([
+                "success" => "Thay đổi password thành công"
+            ], 200);
+        }
+    }
+
     public function destroy(string $id)
     {
 
@@ -161,11 +182,15 @@ class UserController extends Controller
             return response()->json([
                 'success' => "Xóa thành công",
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'error' => "$id khong ton tai",
             ], 500);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new UserExport(), 'users.xlsx');
     }
 }

@@ -43,23 +43,25 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(UserController::class)->group(function () {
             Route::get('/users', 'index')->name('users.index');
+            Route::get('/users/export', 'export')->name('users.export');
             // Route::get('/users/create', 'create')->name('users.create');
             Route::post('/users/store', 'store')->name('users.store');
 
             Route::get('/users/edit/{id}', 'edit')->name('users.edit');
             Route::post('/users/update/{id}', 'update')->name('users.update');
+            Route::post('/changepassword', 'changepassword')->name('user.changepassword');
 
             Route::delete('/users/delete/{id}', 'destroy')->name('users.delete');
         });
 
-        Route::controller(ProductController::class)->group(function(){
+        Route::controller(ProductController::class)->group(function () {
             Route::get('/products', 'index')->name('product.index');
             Route::post('/products/store', 'store')->name('product.store');
         });
-        Route::controller(OrderController::class)->group(function(){
-            Route::get('/orders','index')->name('order.index');
-            Route::get('/orders/show/{id}','show')->name('order.show');
-            Route::post('/confirm','confirm')->name('order.confirm');
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/orders', 'index')->name('order.index');
+            Route::get('/orders/show/{id}', 'show')->name('order.show');
+            Route::post('/confirm', 'confirm')->name('order.confirm');
         });
     });
 });

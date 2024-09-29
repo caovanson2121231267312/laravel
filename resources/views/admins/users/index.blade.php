@@ -47,9 +47,9 @@
                                     data-target="#ModalAddNew">
                                     <i class="fas fa-plus-circle mr-1"></i> Thêm người dùng
                                 </button>
-                                <button type="button" class="btn btn-outline-success">
+                                <a href="{{ route("users.export") }}" class="btn btn-outline-success" id="export-excel">
                                     <i class="fas fa-file-download mr-1"></i> Xuất excel
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -142,6 +142,43 @@
         </div>
     </div>
 
+    {{-- modal changepassword --}}
+    <div class="modal fade" id="ModalPassword" tabindex="-1" aria-labelledby="ModalPasswordLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalPasswordLabel">
+                        <b>Password</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('user.changepassword') }}" method="POST" id="submit_changepasssword"
+                    enctype="multipart/form-data">
+                    <div class="modal-body">
+                        @csrf
+                        <div class="form-group">
+                            <label class="mb-1">Mật khẩu hiện tại:</label>
+                            <input type="password" class="form-control" name="password" id="password">
+                            <div id="name-error" class="text-danger fs-6"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="mb-1">Nhập lại mật khẩu:</label>
+                            <input type="password" class="form-control" name="password_confirmation"
+                                id="password_confirmation">
+                            <div id="password_confirmation-error" class="text-danger fs-6"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary" id="btn-change-password">Xác nhận đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -181,7 +218,8 @@
                     name: 'avatar',
                     render: function(data, type, row) {
                         // cons
-                        let html = `<img class="border rounded-circle border-1" width="80" src="{{ config('app.url') }}/${row?.avatar}" />`
+                        let html =
+                            `<img class="border rounded-circle border-1" width="80" src="{{ config('app.url') }}/${row?.avatar}" />`
                         return html
                     }
                 },
@@ -217,8 +255,11 @@
                                             <a class="dropdown-item modal-edit" data-id="${row?.id}" data-url="{{ route('users.edit', ['id' => '/']) }}/${row?.id}" href="#">
                                                 Edit
                                             </a>
-                                              <a class="dropdown-item detele_item" data-id="${row?.id}" data-url="{{ route('users.delete', ['id' => '/']) }}/${row?.id}" href="#">
+                                            <a class="dropdown-item detele_item" data-id="${row?.id}" data-url="{{ route('users.delete', ['id' => '/']) }}/${row?.id}" href="#">
                                                 Delete
+                                            </a>
+                                            <a class="dropdown-item modal-password" data-id="${row?.id}" data-url="{{ route('user.changepassword') }}" href="#">
+                                                changepassword
                                             </a>
                                         </div>
                                     </div>`
@@ -241,6 +282,78 @@
             datatables.ajax.reload();
         }, 300))
 
+
+        var id = 0;
+        $(document).on("click", ".modal-password", function() {
+            id = $(this).data("id");
+            $("#ModalPassword").modal("show");
+        })
+
+        $(document).on("submit", "#submit_changepasssword", function(event) {
+            event.preventDefault();
+
+            var button_html = $('#btn-change-password').text();
+            $('#btn-change-password').html(`<div class="spinner-border text-light spin-size-2" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>`);
+
+            var formData = new FormData();
+            formData.append("user_id", id);
+            formData.append("password", $("#password").val());
+            formData.append("password_confirmation", $("#password_confirmation").val());
+
+            var url = $('#submit_changepasssword').attr('action');
+            console.log(url)
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    datatables.ajax.reload();
+                    $('#btn-change-password').html(button_html)
+                    toastr.success(response?.success)
+                    $('#ModalPassword').modal('hide')
+                    document.getElementById("submit_changepasssword").reset();
+                },
+                error: function(xhr) {
+                    check_message_error(xhr, "edit")
+                    $('#btn-change-password').html(button_html)
+                }
+            });
+        })
+
+
+        // $(document).on("click", "#export-excel", function() {
+        //     $.ajax({
+        //         url: '{{ route("users.export") }}',
+        //         type: 'POST',
+        //         // data: formData,
+        //         processData: false,
+        //         contentType: false,
+        //         success: function(result, status, xhr) {
+        //             var disposition = xhr.getResponseHeader('content-disposition');
+        //             var matches = /"([^"]*)"/.exec(disposition);
+        //             var filename = (matches != null && matches[1] ? matches[1] : "users.xlsx");
+
+        //             var blob = new Blod([result], {
+        //                 type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        //             })
+
+        //             var link = document.createElement('a');
+        //             link.href = windown.URL.createObjectURL(blob);
+        //             link.download = filename
+        //             document.appendChild(link)
+        //             link.click()
+        //             document.body.removeChild(link);
+        //         },
+        //         error: function(xhr) {
+        //             check_message_error(xhr, "edit")
+        //         }
+        //     });
+        // })
         // });
     </script>
 @endpush

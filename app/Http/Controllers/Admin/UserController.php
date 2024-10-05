@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\UserExport;
+use Exception;
 use Carbon\Carbon;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Jobs\SendEmail;
+use App\Jobs\UpdateUser;
+use App\Exports\UserExport;
 use Illuminate\Support\Str;
-use App\Http\Controllers\Controller;
+use App\Mail\SendMailToUser;
+use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
-use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -125,13 +129,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = User::find($id);
-
-        $data_user = [
-            "name" => $request->name,
-            "email" => $request->email,
-        ];
-
+        $avatar = "";
         if (!empty($request->avatar)) {
             if ($files = $request->file('avatar')) {
                 $fileName = $files->getClientOriginalName();
@@ -141,13 +139,10 @@ class UserController extends Controller
                 $files->move('storage/images/users/', $fileName . '.' . $fileExt);
             }
 
-            $data_user["avatar"] = $file_path;
-        }
-        if (!empty($request->establish)) {
-            $data_user['establish'] = $request->establish;
+            $avatar = $file_path;
         }
 
-        $data->update($data_user);
+        UpdateUser::dispatch($id, $request->all(), $avatar);
 
         return response()->json([
             'success' => 'upadte success'
@@ -170,6 +165,30 @@ class UserController extends Controller
             return response()->json([
                 "success" => "Thay đổi password thành công"
             ], 200);
+        }
+    }
+    public function sendmail(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+
+            $mailData = [
+                "name" => $user->name,
+                "title" => "Gửi email sale cuối tuần",
+                "content" => $request->text_content,
+            ];
+
+            // Mail::to($user->email)->send(new SendMailToUser($mailData));
+            SendEmail::dispatch($mailData, $user);
+
+            return response()->json([
+                "success" => "Đã gửi email tới " . $user->name . " thành công",
+            ], 200);
+        } catch (Exception $e) {
+
+            return response()->json([
+                "error" => $e->getMessage()
+            ], 500);
         }
     }
 

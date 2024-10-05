@@ -50,6 +50,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/users/edit/{id}', 'edit')->name('users.edit');
             Route::post('/users/update/{id}', 'update')->name('users.update');
             Route::post('/changepassword', 'changepassword')->name('user.changepassword');
+            Route::post('sendmail','sendmail')->name('user.sendmail');
 
             Route::delete('/users/delete/{id}', 'destroy')->name('users.delete');
         });

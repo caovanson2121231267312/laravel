@@ -47,7 +47,7 @@
                                     data-target="#ModalAddNew">
                                     <i class="fas fa-plus-circle mr-1"></i> Thêm người dùng
                                 </button>
-                                <a href="{{ route("users.export") }}" class="btn btn-outline-success" id="export-excel">
+                                <a href="{{ route('users.export') }}" class="btn btn-outline-success" id="export-excel">
                                     <i class="fas fa-file-download mr-1"></i> Xuất excel
                                 </a>
                             </div>
@@ -179,6 +179,35 @@
             </div>
         </div>
     </div>
+    {{-- modal Email --}}
+    <div class="modal fade" id="ModalSendMail" tabindex="-1" aria-labelledby="ModalSendMailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title" id="ModalSendMailLabel">
+                        <b>SendEmail</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('user.sendmail') }}" method="POST" id="submit_SendMail" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        @csrf
+                        <div class="form-group">
+                            <label class="mb-1">Nội Dung:</label>
+                            <textarea class="form-control" id="text-content"></textarea>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary" id="btn-send-mail">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -261,6 +290,9 @@
                                             <a class="dropdown-item modal-password" data-id="${row?.id}" data-url="{{ route('user.changepassword') }}" href="#">
                                                 changepassword
                                             </a>
+                                             <a class="dropdown-item modal-sendmail" data-id="${row?.id}" data-url="{{ route('user.sendmail') }}" href="#">
+                                                SendMail
+                                            </a>
                                         </div>
                                     </div>`
                         return html
@@ -287,6 +319,11 @@
         $(document).on("click", ".modal-password", function() {
             id = $(this).data("id");
             $("#ModalPassword").modal("show");
+        })
+
+        $(document).on("click", ".modal-sendmail", function() {
+            id = $(this).data("id");
+            $("#ModalSendMail").modal("show");
         })
 
         $(document).on("submit", "#submit_changepasssword", function(event) {
@@ -324,11 +361,47 @@
                 }
             });
         })
+        $(document).on("submit", "#submit_SendMail", function(event) {
+            event.preventDefault();
+
+            var button_html = $('#btn-send-mail').text();
+            $('#btn-send-mail').html(`<div class="spinner-border text-light spin-size-2" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>`);
+
+            var formData = new FormData();
+            formData.append("user_id", id);
+            formData.append("text_content", $("#text-content").val());
+
+
+            var url = $('#submit_SendMail').attr('action');
+            console.log(url)
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    datatables.ajax.reload();
+                    $('#btn-send-mail').html(button_html)
+                    toastr.success(response?.success)
+                    $('#ModalSendMail').modal('hide')
+                    document.getElementById("submit_SendMail").reset();
+                },
+                error: function(xhr) {
+                    check_message_error(xhr, "edit")
+                    $('#btn-send-mail').html(button_html)
+                }
+            });
+        })
+
 
 
         // $(document).on("click", "#export-excel", function() {
         //     $.ajax({
-        //         url: '{{ route("users.export") }}',
+        //         url: '{{ route('users.export') }}',
         //         type: 'POST',
         //         // data: formData,
         //         processData: false,

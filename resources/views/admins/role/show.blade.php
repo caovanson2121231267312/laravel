@@ -1,12 +1,11 @@
-<form action="{{ route('management.roles.update', ["id" => $role->id]) }}" method="POST" id="submit_form_edit">
+<form action="{{ route('role.update', ['id' => $role->id]) }}" method="POST" id="submit_form_edit"
+    enctype="multipart/form-data">
     <div class="modal-body">
-        @method("PUT")
         @csrf
         <div class="form-group">
-            <label class="mb-1">{{ __('messages.position') }}:</label>
+            <label class="mb-1">Name:</label>
             <input type="text" class="form-control" name="name" value="{{ $role->name }}">
-            <input type="text" class="form-control" name="id" hidden value="{{ $role->id }}">
-            <div id="name-edit-error" class="text-danger fs-6"></div>
+            <div id="name-error" class="text-danger fs-6"></div>
         </div>
 
         @foreach ($arr_permissions as $key => $permission_group)
@@ -43,10 +42,9 @@
                 </div>
             </div>
         @endforeach
-
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('messages.close') }}</button>
-        <button type="submit" class="btn btn-primary" id="btn-submit-edit">{{ __('messages.update') }}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <button type="submit" class="btn btn-primary" id="btn-submit-add">Xác nhận sửa</button>
     </div>
 </form>

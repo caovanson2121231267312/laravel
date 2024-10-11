@@ -62,6 +62,7 @@
                                 <th> Avatar </th>
                                 <th> Name </th>
                                 <th> Email </th>
+                                <th> Chức vụ </th>
                                 <th> Ngày sinh </th>
                                 <th> Tạo lúc </th>
                                 <th class="text-center">Action</th>
@@ -103,6 +104,16 @@
                             <label class="mb-1">Avatar:</label>
                             <input type="file" class="form-control" name="avatar">
                             <div id="avatar-error" class="text-danger fs-6"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="mb-1">Chức vụ: </label>
+                            <select class="form-control" name="role_id">
+                                <option selected value="" disabled>-- Chọn chức vụ --</option>
+                                @foreach ($role as $value)
+                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                @endforeach
+                            </select>
+                            <div id="role_id-error" class="text-danger fs-6"></div>
                         </div>
                         <div class="form-group">
                             <label class="mb-1">Date:</label>
@@ -259,6 +270,15 @@
                 {
                     data: 'email',
                     name: 'email'
+                },
+                {
+                    data: 'roles',
+                    name: 'roles',
+                    render: function(data, type, row) {
+                        // cons
+                        let html = row?.roles?.[0] ? row?.roles?.[0].name : "chưa có chức vụ";
+                        return `<div class="blade text-primary">${html}</div>`;
+                    }
                 },
                 {
                     data: 'establish',

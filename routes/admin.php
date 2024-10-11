@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RoleController;
 
 Route::group(['prefix' => 'admin'], function () {
 
@@ -39,6 +40,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/categories/update/{id}', 'update')->name('category.update');
 
             Route::delete('/categories/delete/{id}', 'destroy')->name('category.delete');
+
         });
 
         Route::controller(UserController::class)->group(function () {
@@ -53,6 +55,13 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('sendmail','sendmail')->name('user.sendmail');
 
             Route::delete('/users/delete/{id}', 'destroy')->name('users.delete');
+        });
+
+        Route::controller(RoleController::class)->group(function () {
+            Route::get('/roles','index')->name('role.index');
+            Route::post('/role/store','store')->name('role.store');
+            Route::get('/role/edit/{id}','edit')->name('role.edit');
+            Route::post('role/update/{id}','update')->name('role.update');
         });
 
         Route::controller(ProductController::class)->group(function () {

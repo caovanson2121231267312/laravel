@@ -106,6 +106,12 @@
                                 <p>Quản lí đơn hàng</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('role.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Quản lí chức vụ</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- <li class="nav-item {{ Route::is('management.*') ? 'menu-open' : '' }}">

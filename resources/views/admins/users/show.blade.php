@@ -13,6 +13,20 @@
             <div id="email-error" class="text-danger fs-6"></div>
         </div>
         <div class="form-group">
+            <label class="mb-1">Chức vụ: </label>
+            <select class="form-control" name="role_id">
+                <option selected value="" disabled>-- Chọn chức vụ --</option>
+                @foreach ($role as $value)
+                    <option
+                    @if($select_role == $value->id)
+                        {{ "selected" }}
+                    @endif
+                    value="{{ $value->id }}">{{ $value->name }}</option>
+                @endforeach
+            </select>
+            <div id="role_id-error" class="text-danger fs-6"></div>
+        </div>
+        <div class="form-group">
             <label class="mb-1">Avatar:</label>
             <input type="file" class="form-control" name="avatar">
             <div id="avatar-error" class="text-danger fs-6"></div>

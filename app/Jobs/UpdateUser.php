@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
+use Spatie\Permission\Models\Role;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -56,6 +57,12 @@ class UpdateUser implements ShouldQueue
         }
 
         $data = User::find($this->id);
+
+        $role = Role::find($this->request['role_id']);
+
         $data->update($data_user);
+
+        $data->syncRoles([$role->name]);
+
     }
 }

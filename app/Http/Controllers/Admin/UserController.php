@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Mail\SendMailToUser;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +31,7 @@ class UserController extends Controller
             $keywords = $request->keywords;
             $establish = $request->establish;
 
-            $data = User::query();
+            $data = User::with(["roles"]);
 
             if (!empty($keywords)) {
                 $data->where("name", "like", "%$keywords%");
@@ -60,7 +61,9 @@ class UserController extends Controller
                 })
                 ->make(true);
         } else {
-            return view("admins.users.index");
+            $role = Role::get();
+
+            return view("admins.users.index", ['role' => $role]);
         }
     }
 
@@ -92,7 +95,11 @@ class UserController extends Controller
 
         $data["avatar"] = $file_path;
 
-        User::create($data);
+        $user = User::create($data);
+
+        $role = Role::find($request->role_id);
+
+        $user->assignRole([$role->name]);
 
         return response()->json([
             "success" => "Đã thêm tài khoản mới",
@@ -115,8 +122,20 @@ class UserController extends Controller
     {
         //
         try {
-            $data = User::FindOrFail($id);
-            return view("admins.users.show", ['data' => $data]);
+            $role = Role::get();
+            $data = User::FindOrFail($id)->load('roles');
+            // dd($data->roles);
+            $select_role = 0;
+            
+            if(!empty($data->roles) && count($data->roles) > 0) {
+                $select_role = $data->roles[0]->id;
+            }
+
+            return view("admins.users.show", [
+                'data' => $data,
+                'role' => $role,
+                'select_role' => $select_role,
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "error" => $e->getMessage()
